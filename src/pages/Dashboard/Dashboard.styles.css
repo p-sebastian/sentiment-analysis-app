@@ -1,0 +1,48 @@
+div.scrollable {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-wrap: nowrap;
+  flex-flow: row;
+}
+
+ion-card {
+  flex: 0 0 auto;
+  max-width: 90vw;
+  max-height: 80vh;
+  margin-left: 5vw;
+  margin-right: 5vw;
+}
+
+ion-card.um-card ion-img {
+  height: calc(90vw / 0.674);
+  width: 90vw;
+  object-fit: cover;
+}
+
+ion-card p {
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  overflow: hidden;
+  max-height: 3em;
+  line-height: 1.5em;
+  padding: 0 16px;
+}
+
+.md div.empty {
+  height: 100px;
+  width: 1px !important;
+  display: inline-table;
+}
+
+ion-card.um-card {
+  display: flex;
+  flex-flow: column;
+}
+
+ion-card.um-card ion-item-divider.space {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: unset;
+  height: 10px !important;
+}
