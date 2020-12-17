@@ -1,30 +1,28 @@
-import {menuController} from '@ionic/core'
-import {useCallback, useEffect} from 'react'
-import {useList} from 'react-firebase-hooks/database'
+import {InputChangeEventDetail} from '@ionic/core'
+import {useCallback, useState} from 'react'
 
-import {db} from '../../config/firebase.config'
-import {useShopAction} from '../../hooks/useAction.hook'
-import {TMovie} from '../../type/TMovie'
-import {TSnapshot} from '../../type/TSnapshot'
-
-const Def: TSnapshot<TMovie>[] = []
+import {useMessageAction} from '../../hooks/useAction.hook'
+import {useASelector} from '../../utils/recipies.util'
 
 const useDashboard = () => {
-  const onMenuToggle = useCallback(() => menuController.open('first'), [])
-  const [snapshots = Def, loading] = useList(db.ref('movies'))
-  const clear = useShopAction('clear')
+  const [text, setText] = useState('')
+  const keys = useASelector(state => state.message.keys)
+  const send = useMessageAction('send')
+  const clear = useMessageAction('clear')
 
-  useEffect(() => {
-    clear()
-  }, [])
+  const onChange = (e: CustomEvent<InputChangeEventDetail>) => setText(e.detail.value ?? '')
+  const onSend = useCallback(() => {
+    send(text)
+    setText('')
+  }, [text])
 
-  return {snapshots: snapshots as typeof Def, loading, onMenuToggle}
+  return {text, onChange, onSend, keys, clear}
 }
 
-const useUpcoming = () => {
-  const [snapshots = Def, loading] = useList(db.ref('upcoming'))
+const useItem = (id: string) => {
+  const message = useASelector(state => state.message.messages[id], [id])
 
-  return {upcoming: snapshots as typeof Def, loading}
+  return message
 }
 
-export const DashboardHooks = {useDashboard, useUpcoming}
+export const DashboardHooks = {useDashboard, useItem}

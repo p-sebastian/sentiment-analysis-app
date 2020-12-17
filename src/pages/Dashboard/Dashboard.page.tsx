@@ -3,67 +3,74 @@ import './Dashboard.styles.css'
 import {
   IonButton,
   IonButtons,
+  IonCard,
   IonContent,
   IonHeader,
   IonIcon,
+  IonInput,
   IonItem,
-  IonItemDivider,
-  IonList,
+  IonLabel,
+  IonNote,
   IonPage,
-  IonProgressBar,
   IonTitle,
   IonToolbar,
 } from '@ionic/react'
-import {gridOutline} from 'ionicons/icons'
+import {refreshOutline, sendSharp} from 'ionicons/icons'
 import React from 'react'
 
 import {DashboardHooks} from './Dashboard.hooks'
-import Movie from './Movie.component'
 
 export const DashboardPage: React.FC = () => {
-  const {loading, snapshots, onMenuToggle} = useDashboard()
-  const {loading: l, upcoming} = useUpcoming()
+  const {text, onChange, onSend, keys, clear} = useDashboard()
 
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar color="primary">
           <IonButtons slot="start">
-            <IonButton onClick={onMenuToggle}>
-              <IonIcon slot="icon-only" icon={gridOutline} />
+            <IonButton onClick={clear}>
+              <IonIcon slot="icon-only" icon={refreshOutline} />
             </IonButton>
           </IonButtons>
-          <IonTitle>Cine UEES</IonTitle>
+          <IonTitle>Sentiment Analysis</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent color="tertiary" fullscreen scrollY>
-        {loading || l ? <IonProgressBar type="indeterminate" color="secondary" /> : null}
-        <IonList className="ion-no-padding" color="tertiary">
-          <IonItemDivider sticky color="background">
-            Cartelera
-          </IonItemDivider>
-          <IonItem className="ion-no-padding" color="tertiary">
-            <div className="scrollable">
-              {snapshots.map(snap => (
-                <Movie key={snap.key} movie={snap.val()} movieId={snap.key} type="current" />
-              ))}
-            </div>
-          </IonItem>
-          <IonItemDivider sticky color="background">
-            Proximos Estrenos
-          </IonItemDivider>
-          <IonItem className="ion-no-padding" color="tertiary">
-            <div className="scrollable">
-              {upcoming.map(snap => (
-                <Movie key={snap.key} movie={snap.val()} movieId={snap.key} type="next" />
-              ))}
-            </div>
-          </IonItem>
-          <IonItemDivider sticky color="tertiary"></IonItemDivider>
-        </IonList>
+        {keys.map(id => (
+          <Item key={id} id={id} />
+        ))}
       </IonContent>
+      <IonToolbar color="background">
+        <IonItem color="background">
+          <IonInput placeholder="Test message" onIonChange={onChange} value={text} />
+          <IonButton slot="end" color="background" onClick={onSend}>
+            <IonIcon slot="icon-only" icon={sendSharp} />
+          </IonButton>
+        </IonItem>
+      </IonToolbar>
     </IonPage>
   )
 }
 
-const {useDashboard, useUpcoming} = DashboardHooks
+const Item: React.FC<{id: string}> = ({id}) => {
+  const {message, score} = useItem(id)
+  let color = 'danger'
+  let sentiment = 'negative'
+  if (score >= 0.5) {
+    sentiment = 'positive'
+    color = 'success'
+  }
+
+  return (
+    <IonCard className="ion-no-padding">
+      <IonItem color="background">
+        <IonLabel>{message}</IonLabel>
+        <IonNote slot="end" color={color}>
+          {sentiment}
+        </IonNote>
+      </IonItem>
+    </IonCard>
+  )
+}
+
+const {useDashboard, useItem} = DashboardHooks

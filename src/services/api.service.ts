@@ -1,12 +1,11 @@
 import axios, {AxiosResponse} from 'axios'
 
-import {auth} from '../config/firebase.config'
-import {AuthSignInPayload} from '../redux/auth.interface'
 import {wrapper} from '../utils/recipies.util'
 
 export class ApiService {
   private static instance: ApiService
   private static URL = 'https://convini.ngrok.io'
+  private static COLAB_URL = 'http://0d66e581c9f0.ngrok.io'
   private static VERSION = 'api/v1'
   private static PORT = 443
   private _token: string | null = null
@@ -36,21 +35,27 @@ export class ApiService {
     return ApiService.instance
   }
 
-  set token(token: string | null) {
-    this._token = token
-  }
+  tensorflow = (sentence: string) =>
+    wrapper<AxiosResponse<number[]>>(
+      axios.post.bind(null, `${ApiService.COLAB_URL}/`, {sentence}, {headers: this.options}) as any,
+      400,
+    )
 
-  login = ({email, password}: AuthSignInPayload) => {
-    const bound = auth().signInWithEmailAndPassword.bind(auth(), email, password)
+  // set token(token: string | null) {
+  //   this._token = token
+  // }
 
-    return wrapper(bound, 401)
-  }
+  // login = ({email, password}: AuthSignInPayload) => {
+  //   const bound = auth().signInWithEmailAndPassword.bind(auth(), email, password)
 
-  register = ({email, password}: AuthSignInPayload) => {
-    const bound = auth().createUserWithEmailAndPassword.bind(auth(), email, password)
+  //   return wrapper(bound, 401)
+  // }
 
-    return wrapper(bound, 401)
-  }
+  // register = ({email, password}: AuthSignInPayload) => {
+  //   const bound = auth().createUserWithEmailAndPassword.bind(auth(), email, password)
+
+  //   return wrapper(bound, 401)
+  // }
 
   // verifyUser = (identification: string) =>
   //   wrapper<AxiosResponse<TUser>>(
