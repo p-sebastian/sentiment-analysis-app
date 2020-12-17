@@ -12,6 +12,9 @@ const useDashboard = () => {
 
   const onChange = (e: CustomEvent<InputChangeEventDetail>) => setText(e.detail.value ?? '')
   const onSend = useCallback(() => {
+    if (!text.trim()) {
+      return
+    }
     send(text)
     setText('')
   }, [text])

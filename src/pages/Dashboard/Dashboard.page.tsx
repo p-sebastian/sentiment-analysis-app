@@ -15,7 +15,7 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/react'
-import {refreshOutline, sendSharp} from 'ionicons/icons'
+import {alertCircleOutline, refreshOutline, sendSharp} from 'ionicons/icons'
 import React from 'react'
 
 import {DashboardHooks} from './Dashboard.hooks'
@@ -54,19 +54,23 @@ export const DashboardPage: React.FC = () => {
 
 const Item: React.FC<{id: string}> = ({id}) => {
   const {message, score} = useItem(id)
-  let color = 'danger'
-  let sentiment = 'negative'
-  if (score >= 0.5) {
-    sentiment = 'positive'
-    color = 'success'
+  if (score < 0.5) {
+    return (
+      <IonCard className="ion-no-padding">
+        <IonItem color="background">
+          <IonLabel color="medium">Censored Message</IonLabel>
+          <IonIcon slot="end" color="danger" icon={alertCircleOutline} />
+        </IonItem>
+      </IonCard>
+    )
   }
 
   return (
     <IonCard className="ion-no-padding">
       <IonItem color="background">
         <IonLabel>{message}</IonLabel>
-        <IonNote slot="end" color={color}>
-          {sentiment}
+        <IonNote slot="end" color="success">
+          positive
         </IonNote>
       </IonItem>
     </IonCard>

@@ -5,7 +5,7 @@ import {wrapper} from '../utils/recipies.util'
 export class ApiService {
   private static instance: ApiService
   private static URL = 'https://convini.ngrok.io'
-  private static COLAB_URL = 'http://0d66e581c9f0.ngrok.io'
+  private static COLAB_URL = 'https://b0f184dc4d7a.ngrok.io'
   private static VERSION = 'api/v1'
   private static PORT = 443
   private _token: string | null = null
